@@ -1,0 +1,48 @@
+Ti.include('lib/oauth_adapter.js');
+var oAuthAdapter = new OAuthAdapter(
+'YOUR CONSUMER SECRET',
+'YOUR CONSUMER KEY',
+'HMAC-SHA1'
+);
+// load the access token for the service (if previously saved)
+oAuthAdapter.loadAccessToken('twitter');
+
+//OAuth if need.
+if (oAuthAdapter.isAuthorized() == false) 
+{
+var receivePin = function() {
+oAuthAdapter.getAccessToken('https://api.twitter.com/oauth/access_token'); 
+oAuthAdapter.saveAccessToken('twitter');
+};
+// show the authorization UI and call back the receive PIN function 
+oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' +
+oAuthAdapter.getRequestToken('https://api.twitter.com/oauth/request_token'), receivePin);
+}
+
+//TWEET
+oAuthAdapter.send({
+	url:'https://api.twitter.com/1/statuses/update.json', 
+	parameters:[
+		['status', '@mogyatest test from tmtwit. '+Math.random()]
+	],
+	method:'POST',
+	onSuccess:function(responce){
+		alert('post succeed');
+	}
+});
+
+//get timeline
+oAuthAdapter.send({
+	url:'https://api.twitter.com/1/statuses/home_timeline.json', 
+	parameters:[
+	],
+	method:'GET',
+	onSuccess:function(response){
+		alert('got tweets.see info log.');
+		response = JSON.parse(response);
+		for(var i=0;i<response.length;i++){
+			var tweet = response[i];
+			Ti.API.info(tweet.user.name+':'+tweet.text);
+		}
+	}
+});
