@@ -45,15 +45,15 @@
  // if the client is not authorized, ask for authorization. the previous tweet will be sent automatically after authorization
  if (oAuthAdapter.isAuthorized() == false)
  {
-   // this function will be called as soon as the application is authorized
+	 // this function will be called as soon as the application is authorized
      var receivePin = function() {
-     // get the access token with the provided pin/oauth_verifier
+		 // get the access token with the provided pin/oauth_verifier
          oAuthAdapter.getAccessToken('https://api.twitter.com/oauth/access_token');
-     // save the access token
+		 // save the access token
          oAuthAdapter.saveAccessToken('twitter');
      };
 
-   // show the authorization UI and call back the receive PIN function
+	 // show the authorization UI and call back the receive PIN function
      oAuthAdapter.showAuthorizeUI('https://api.twitter.com/oauth/authorize?' + oAuthAdapter.getRequestToken('https://api.twitter.com/oauth/request_token'), receivePin);
  }
 
@@ -70,11 +70,11 @@ Ti.include('lib/oauth.js');
 // create an OAuthAdapter instance
 var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
  {
-  
-  Ti.API.info('*********************************************');
-  Ti.API.info('If you like the OAuth Adapter, consider donating at');
-  Ti.API.info('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=T5HUU4J5EQTJU&lc=IT&item_name=OAuth%20Adapter&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted');
-  Ti.API.info('*********************************************'); 
+	
+	Ti.API.info('*********************************************');
+	Ti.API.info('If you like the OAuth Adapter, consider donating at');
+	Ti.API.info('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=T5HUU4J5EQTJU&lc=IT&item_name=OAuth%20Adapter&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted');
+	Ti.API.info('*********************************************');	
 
     // will hold the consumer secret and consumer key as provided by the caller
     var consumerSecret = pConsumerSecret;
@@ -200,18 +200,18 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
         // remove the UI
         try
         {
-          Ti.API.debug('destroyAuthorizeUI:webView.removeEventListener');
+	        Ti.API.debug('destroyAuthorizeUI:webView.removeEventListener');
             webView.removeEventListener('load', authorizeUICallback);
-          Ti.API.debug('destroyAuthorizeUI:window.close()');
+	        Ti.API.debug('destroyAuthorizeUI:window.close()');
             window.hide();
-      //          Ti.API.debug('destroyAuthorizeUI:window.remove(view)');
-      // window.remove(view);
-      //          Ti.API.debug('destroyAuthorizeUI:view.remove(webView)');
-      //          view.remove(webView);
-      //          Ti.API.debug('destroyAuthorizeUI:nullifying');
-      //          webView = null;
-      //             view = null;
-      //             window = null;
+			// 	        Ti.API.debug('destroyAuthorizeUI:window.remove(view)');
+			// window.remove(view);
+			// 	        Ti.API.debug('destroyAuthorizeUI:view.remove(webView)');
+			// 	        view.remove(webView);
+			// 	        Ti.API.debug('destroyAuthorizeUI:nullifying');
+			// 	        webView = null;
+			//             view = null;
+			//             window = null;
         }
         catch(ex)
         {
@@ -289,9 +289,9 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
 
         webView = Ti.UI.createWebView({
             url: pUrl,
-      autoDetect:[Ti.UI.AUTODETECT_NONE]
+			autoDetect:[Ti.UI.AUTODETECT_NONE]
         });
-    Ti.API.debug('Setting:['+Ti.UI.AUTODETECT_NONE+']');
+		Ti.API.debug('Setting:['+Ti.UI.AUTODETECT_NONE+']');
         webView.addEventListener('load', authorizeUICallback);
         view.add(webView);
 
@@ -341,66 +341,10 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
     {
         Ti.API.debug('Processing queue.');
         while ((q = actionsQueue.shift()) != null)
-        send(q.url, q.parameters, q.title, q.successMessage, q.errorMessage);
+        send(q);
 
         Ti.API.debug('Processing queue: done.');
     };
-/*
-    // TODO: remove this on a separate Twitter library
-    var send = function(pUrl, pParameters, pTitle, pSuccessMessage, pErrorMessage)
-    {
-        Ti.API.debug('Sending a message to the service at [' + pUrl + '] with the following params: ' + JSON.stringify(pParameters));
-
-        if (accessToken == null || accessTokenSecret == null)
-        {
-
-            Ti.API.debug('The send status cannot be processed as the client doesn\'t have an access token. The status update will be sent as soon as the client has an access token.');
-
-            actionsQueue.push({
-                url: pUrl,
-                parameters: pParameters,
-                title: pTitle,
-                successMessage: pSuccessMessage,
-                errorMessage: pErrorMessage
-            });
-            return;
-        }
-
-        accessor.tokenSecret = accessTokenSecret;
-
-        var message = createMessage(pUrl);
-        message.parameters.push(['oauth_token', accessToken]);
-        for (p in pParameters) message.parameters.push(pParameters[p]);
-        OAuth.setTimestampAndNonce(message);
-        OAuth.SignatureMethod.sign(message, accessor);
-
-        var parameterMap = OAuth.getParameterMap(message.parameters);
-        for (var p in parameterMap)
-        Ti.API.debug(p + ': ' + parameterMap[p]);
-
-        var client = Ti.Network.createHTTPClient();
-        client.open('POST', pUrl, false);
-        client.send(parameterMap);
-
-        if (client.status == 200) {
-            Ti.UI.createAlertDialog({
-                title: pTitle,
-                message: pSuccessMessage
-            }).show();
-        } else {
-            Ti.UI.createAlertDialog({
-                title: pTitle,
-                message: pErrorMessage
-            }).show();
-        }
-
-        Ti.API.debug('*** sendStatus, Response: [' + client.status + '] ' + client.responseText);
-
-        return client.responseText;
-
-    };
-    this.send = send;
-*/
     var oauthParams = "OAuth realm,oauth_version,oauth_consumer_key,oauth_nonce,oauth_signature,oauth_signature_method,oauth_timestamp,oauth_token".split(',');
     var makeAuthorizationHeaderString = function(params) {
         var str = ''; 
@@ -445,7 +389,7 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
         for (var p in parameterMap) {
            query.push( encodeURIComponent(p) + "=" + encodeURIComponent(parameterMap[p]) ); 
         }
-        query.sort();//(9.1.1.  Normalize Request Parameters)
+				query.sort();//(9.1.1.  Normalize Request Parameters)
         if (query.length) {
             query = query.join('&');
             return url + ((url.indexOf('?') >= 0) ? '&' : '?') + query;
@@ -458,23 +402,14 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
         var pUrl            = params.url;
         var pParameters     = params.parameters || [];
         var pTitle          = params.title;
-        var pSuccessMessage = params.successMessage;
-        var pErrorMessage   = params.errorMessage;
         var pMethod         = params.method || "POST";
         var resultByXML      = params.resultByXML || false;
 
-        Ti.API.debug('Send2ing a message to the service at [' + pUrl + '] with the following params: ' + JSON.stringify(pParameters));
+        Ti.API.debug('Sending a message to the service at [' + pUrl + '] with the following params: ' + JSON.stringify(pParameters));
         if (accessToken == null || accessTokenSecret == null)
         {
             Ti.API.debug('The send status cannot be processed as the client doesn\'t have an access token. The status update will be sent as soon as the client has an access token.');
-            actionsQueue.push({
-                url: pUrl,
-                parameters: pParameters,
-                title: pTitle,
-                method: pMethod,
-                successMessage: pSuccessMessage,
-                errorMessage: pErrorMessage
-            });
+            actionsQueue.push(params);
             return;
         }
 
@@ -488,24 +423,29 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
         for (var p in parameterMap) Ti.API.debug(p + ': ' + parameterMap[p]);
 
         var client = Ti.Network.createHTTPClient();
+        client.onerror = function(e){
+          Ti.API.debug(e);
+          if(params && params.onError){
+            params.onError(e);
+          }
+        }
         if (pMethod == "GET") {
             pUrl = makeGetURL(pUrl, parameterMap);
             parameterMap = null;
-            Ti.API.debug('url for GET:'+pUrl);
+						Ti.API.debug('url for GET:'+pUrl);
         }
-        client.open(pMethod, pUrl, false);
-        client.send(parameterMap);
+				client.open(pMethod, pUrl, false);
+				client.send(parameterMap);
 
         if (client.status == 200) {
-            Ti.UI.createAlertDialog({
-                title: pTitle,
-                message: pSuccessMessage
-            }).show();
+					if(params.onSuccess){
+            Ti.API.debug('onSuccess, Response: [' + client.status + '] ' + client.responseText);
+            params.onSuccess(client.responseText);
+          }
         } else {
-            Ti.UI.createAlertDialog({
-                title: pTitle,
-                message: pErrorMessage
-            }).show();
+          if(params.onError){
+            params.onError({status:client.status,error:client.responseText});
+          }
         }
 
         Ti.API.debug('*** sendStatus, Response: [' + client.status + '] ' + client.responseText);
