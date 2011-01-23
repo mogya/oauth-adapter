@@ -421,14 +421,12 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
         OAuth.SignatureMethod.sign(message, accessor);
         var parameterMap = OAuth.getParameterMap(message.parameters);
         for (var p in parameterMap) Ti.API.debug(p + ': ' + parameterMap[p]);
-
-        var client = Ti.Network.createHTTPClient();
         if (pMethod == "GET") {
             pUrl = makeGetURL(pUrl, parameterMap);
             parameterMap = null;
             Ti.API.debug('url for GET:'+pUrl);
         }
-        client.open(pMethod, pUrl, false);
+        var client = Ti.Network.createHTTPClient();
         client.onerror = function(e){
           Ti.API.debug(e);
           if(params.onError){
@@ -447,7 +445,7 @@ var OAuthAdapter = function(pConsumerSecret, pConsumerKey, pSignatureMethod)
             }
           }
         }
-
+        client.open(pMethod, pUrl, false);
         client.send(parameterMap);
 
         return null;
